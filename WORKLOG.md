@@ -18,11 +18,26 @@
 - **GitHub Pages 활성화** — `gh api -X POST repos/Dorongyee/habit_tracker/pages` (source: main / root)
 - 배포 확인: https://dorongyee.github.io/habit_tracker/ → HTTP 200, 배포본 197행이 수정된 베이스 URL인 것 확인
 
-### 다음 할 일 (사용자 수동 작업)
-1. 구글 OAuth 클라이언트 생성 — 승인된 리디렉션 URI = `https://zmgcxueaesedyfkkxlzi.supabase.co/auth/v1/callback`
-2. Supabase > Authentication > Providers > Google 에 ID/시크릿 입력
-3. Supabase > Authentication > URL Configuration — Site URL / Redirect URLs = `https://dorongyee.github.io/habit_tracker/`
-4. 폰·PC 교차 로그인 동기화 확인
+### 검증 (실제 브라우저 구동)
+chrome-devtools MCP 설치(user 스코프) + 이번 세션에서는 puppeteer-core로 Chrome을 직접 띄워 확인.
+- `GET https://dorongyee.github.io/habit_tracker/` → **HTTP 200**, title `습관 점수표`
+- 모바일 뷰포트(430x900, DPR2) 렌더링 정상 — 게이트 화면, 다크테마, 구글 로그인 버튼 노출 확인 (스크린샷)
+- 게이트 상태: `gateVisible=true`, 문구 "구글 계정으로 로그인하면 폰과 PC에서 같은 기록을 볼 수 있습니다.", 버튼 `구글 계정으로 로그인` — "설정이 비어 있습니다" 아님 = **키 정상 인식**
+- JS 런타임 에러 **0건**, supabase-js CDN 동적 import 성공
+- 로그인 버튼 클릭 → `accounts.google.com/v3/signin/identifier` 로 이동, 화면에 "zmgcxueaesedyfkkxlzi.supabase.co(으)로 이동" 표시
+  → **redirect_uri_mismatch 없음**. 구글 콘솔의 승인된 리디렉션 URI가 올바르게 등록된 것이 실증됨
+- Supabase `/auth/v1/settings` 조회: `google: true` (초기엔 false였고, 사용자가 프로바이더 켠 뒤 재확인)
+- `/auth/v1/authorize?provider=google` 302 Location 검사: client_id / redirect_uri(supabase callback) / redirect_to(Pages 주소) 3개 모두 정상
+
+### 남은 이슈
+- `https://dorongyee.github.io/favicon.ico` **404** (유일한 네트워크 에러). 동작엔 영향 없음. "홈 화면에 추가" 시 아이콘이 기본값으로 보임 → 아이콘 추가는 사용자 요청 시 진행
+- 실제 구글 계정 로그인 후 데이터 저장/폰-PC 동기화는 **사용자 계정 자격증명이 필요해 미검증**
+
+### 다음 할 일
+1. ~~구글 OAuth 클라이언트 생성~~ 완료 (client_id `752067815700-g21gbl...`)
+2. ~~Supabase Google 프로바이더 활성화~~ 완료 (`google: true` 확인)
+3. ~~URL Configuration~~ 완료 (302 응답의 redirect_to 로 확인)
+4. **사용자 실제 로그인 → 폰·PC 교차 동기화 확인** ← 남음
 
 ### 비고
 - 로컬 폴더가 git 저장소가 아니었음 (`.git` 없음) → GitHub 업로드는 웹 UI로 한 것으로 보임
