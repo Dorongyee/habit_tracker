@@ -42,3 +42,15 @@ chrome-devtools MCP 설치(user 스코프) + 이번 세션에서는 puppeteer-co
 ### 비고
 - 로컬 폴더가 git 저장소가 아니었음 (`.git` 없음) → GitHub 업로드는 웹 UI로 한 것으로 보임
 - 배포 작업 진행 중: GitHub CLI 설치 → 저장소 연결 → GitHub Pages 활성화
+
+## 2026-09-20 (2차)
+### 수정
+- `index.html:146` **로그인 후에도 게이트 화면이 안 사라지는 버그 수정** — `.gate[hidden]{display:none}` 규칙 추가
+  - 원인: `.gate{...display:flex}` 는 클래스 선택자(명시도 0,1,0)라 브라우저 기본 스타일 `[hidden]{display:none}` 를 이김. `hideGate()` 가 `gate.hidden = true` 를 해도 **실제로는 계속 화면을 덮고 있었음**
+  - 로그인 자체와 동기화는 정상 작동 중이었고, 오버레이만 안 걷힌 것
+- 백업: `backup/2026-09-20-2/index.html`
+
+### 검증
+- 수정 전 배포본(실측): `gate.hidden = true` 후에도 `display: flex`, `stillCoversScreen: true`
+- 수정 후 로컬: `display: none`, `stillCoversScreen: false`
+- 수정 후 배포본: 아래 재검증 참조
