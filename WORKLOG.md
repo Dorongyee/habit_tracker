@@ -53,4 +53,5 @@ chrome-devtools MCP 설치(user 스코프) + 이번 세션에서는 puppeteer-co
 ### 검증
 - 수정 전 배포본(실측): `gate.hidden = true` 후에도 `display: flex`, `stillCoversScreen: true`
 - 수정 후 로컬: `display: none`, `stillCoversScreen: false`
-- 수정 후 배포본: 아래 재검증 참조
+- 수정 후 배포본 재검증(빌드 `4d93852` 반영 확인 후): `display: none`, `stillCoversScreen: false` → **해결**
+- 게이트를 걷은 뒤 앱 화면 스크린샷 확인: 오늘 탭 정상 렌더링, 날짜 "9월 20일 (일)" **일요일 빨간색 적용 확인**, 원형 게이지·하단 탭 3개 정상
